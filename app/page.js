@@ -5,32 +5,50 @@ import { site } from "@/lib/site";
 
 export const revalidate = 3600;
 
+function SectionHead({ title, href }) {
+  return (
+    <div className="mb-4 flex items-baseline justify-between border-t-2 border-ink pt-2">
+      <h2 className="font-serif text-2xl font-bold">{title}</h2>
+      {href && <Link href={href} className="text-sm font-semibold text-brand">See all</Link>}
+    </div>
+  );
+}
+
 export default async function Home() {
   const [cats, posts] = await Promise.all([getCategories(), getPosts()]);
   const name = (slug) => cats.find((c) => c.slug === slug)?.name;
+  const [lead, ...rest] = posts;
+  const secondary = rest.slice(0, 2);
+  const latest = rest.slice(2, 8);
   const top = cats.filter((c) => !c.parent);
   const jsonLd = { "@context": "https://schema.org", "@type": "WebSite", name: site.name, url: site.url,
     potentialAction: { "@type": "SearchAction", target: site.url + "/search", "query-input": "required name=search_term_string" } };
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <section>
-        <h1 className="font-serif text-4xl font-bold leading-tight">{site.tagline}</h1>
-        <p className="mt-3 text-muted max-w-xl">{site.description}</p>
-        <Link href="/search" className="mt-5 flex items-center justify-between rounded-full border border-line bg-surface px-5 py-3 text-muted">
-          <span>Search a code or bank</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 4a7 7 0 105 12l4 4 1.5-1.5-4-4A7 7 0 0011 4z" /></svg>
-        </Link>
-        <div className="no-scrollbar -mx-4 mt-4 flex gap-2 overflow-x-auto px-4">
-          {top.map((c) => (
-            <Link key={c.slug} href={"/category/" + c.slug} className="shrink-0 rounded-full bg-brandsoft px-4 py-2 text-sm font-medium text-brand">{c.name}</Link>
-          ))}
-        </div>
-      </section>
-      <section className="mt-9">
-        <h2 className="mb-3 text-xl font-bold">Latest guides</h2>
-        <div className="space-y-3">{posts.map((p) => <PostCard key={p.slug} post={p} categoryName={name(p.category)} />)}</div>
-      </section>
+      <h1 className="sr-only">{site.name}: {site.tagline}</h1>
+      {lead && (
+        <section className="grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2"><PostCard post={lead} categoryName={name(lead.category)} variant="lead" priority /></div>
+          <div className="space-y-6 lg:border-l lg:border-line lg:pl-8">
+            {secondary.map((p) => <PostCard key={p.slug} post={p} categoryName={name(p.category)} variant="grid" />)}
+          </div>
+        </section>
+      )}
+      {latest.length > 0 && (
+        <section className="mt-12"><SectionHead title="Latest guides" />
+          <div className="max-w-3xl">{latest.map((p) => <PostCard key={p.slug} post={p} categoryName={name(p.category)} />)}</div>
+        </section>
+      )}
+      {top.map((c) => {
+        const list = posts.filter((p) => p.category === c.slug || cats.find((x) => x.slug === p.category)?.parent === c.slug).slice(0, 3);
+        if (!list.length) return null;
+        return (
+          <section key={c.slug} className="mt-12"><SectionHead title={c.name} href={"/category/" + c.slug} />
+            <div className="max-w-3xl">{list.map((p) => <PostCard key={p.slug} post={p} categoryName={name(p.category)} />)}</div>
+          </section>
+        );
+      })}
     </>
   );
 }
