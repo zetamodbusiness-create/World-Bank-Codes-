@@ -8,8 +8,8 @@ export default async function SearchPage() {
   const [posts, cats] = await Promise.all([getPosts(), getCategories()]);
   const items = posts.map((p) => ({ slug: p.slug, title: p.title, excerpt: p.excerpt, categoryName: cats.find((c) => c.slug === p.category)?.name || "" }));
   return (
-    <div>
-      <h1 className="mb-4 font-serif text-3xl font-bold">Search</h1>
+    <div className="mx-auto max-w-3xl">
+      <h1 className="sr-only">Search</h1>
       <SearchBox items={items} />
     </div>
   );
