@@ -1,12 +1,12 @@
 import "./globals.css";
 import Link from "next/link";
-import { IBM_Plex_Sans, Source_Serif_4 } from "next/font/google";
-import BottomNav from "@/components/BottomNav";
+import { Newsreader, Public_Sans } from "next/font/google";
+import Tabs from "@/components/Tabs";
 import { site } from "@/lib/site";
 import { getCategories } from "@/lib/data";
 
-const sans = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-sans", display: "swap" });
-const serif = Source_Serif_4({ subsets: ["latin"], variable: "--font-serif", display: "swap" });
+const sans = Public_Sans({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const serif = Newsreader({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-serif", display: "swap" });
 
 export const metadata = {
   metadataBase: new URL(site.url),
@@ -15,34 +15,27 @@ export const metadata = {
   openGraph: { siteName: site.name, type: "website", locale: "en_US" },
   alternates: { canonical: "/" }
 };
-export const viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#0b6b57" };
+export const viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export default async function RootLayout({ children }) {
   const top = (await getCategories()).filter((c) => !c.parent);
+  const items = [{ href: "/", label: "Home" }, ...top.map((c) => ({ href: "/category/" + c.slug, label: c.name })), { href: "/search", label: "Search" }];
   return (
     <html lang="en-US" className={sans.variable + " " + serif.variable}>
-      <body className="font-sans antialiased min-h-screen pb-24 md:pb-0">
-        <header className="sticky top-0 z-30 border-b border-line bg-surface" style={{ paddingTop: "env(safe-area-inset-top)" }}>
-          <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
-            <Link href="/" className="text-lg font-bold tracking-tight">{site.name}</Link>
-            <nav aria-label="Main" className="hidden items-center gap-5 text-sm font-medium md:flex">
-              {top.map((c) => <Link key={c.slug} href={"/category/" + c.slug} className="text-muted hover:text-ink">{c.name}</Link>)}
-              <Link href="/search" className="rounded-full bg-brand px-4 py-1.5 text-brandink">Search</Link>
-            </nav>
-            <Link href="/search" aria-label="Search" className="md:hidden p-2 text-muted">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 4a7 7 0 105 12l4 4 1.5-1.5-4-4A7 7 0 0011 4z" /></svg>
-            </Link>
-          </div>
+      <body className="min-h-screen font-sans antialiased">
+        <header className="mx-auto max-w-5xl px-4 pb-4 pt-6 text-center" style={{ paddingTop: "max(1.5rem, env(safe-area-inset-top))" }}>
+          <Link href="/" className="font-serif text-4xl font-extrabold tracking-tight sm:text-5xl">{site.name}</Link>
+          <p className="mt-1 font-serif italic text-muted">{site.tagline}</p>
         </header>
-        <main className="mx-auto max-w-3xl px-4 py-6">{children}</main>
-        <footer className="mx-auto max-w-3xl px-4 pb-10 text-sm text-muted">
-          <div className="flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-6">
+        <Tabs items={items} />
+        <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
+        <footer className="mx-auto max-w-5xl px-4 pb-12 text-sm text-muted" style={{ paddingBottom: "max(3rem, env(safe-area-inset-bottom))" }}>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 border-t-2 border-ink pt-5">
             <Link href="/about">About</Link><Link href="/contact">Contact</Link>
             <Link href="/privacy">Privacy Policy</Link><Link href="/disclaimer">Disclaimer</Link>
           </div>
           <p className="mt-3">© {new Date().getFullYear()} {site.name}. For information only, not financial advice.</p>
         </footer>
-        <BottomNav />
       </body>
     </html>
   );
