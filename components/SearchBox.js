@@ -14,18 +14,18 @@ export default function SearchBox({ items }) {
       <label htmlFor="q" className="sr-only">Search guides</label>
       <input id="q" type="search" value={q} onChange={(e) => setQ(e.target.value)} autoFocus
         placeholder="Search routing numbers, SWIFT codes, IBAN…"
-        className="w-full rounded-full border border-line bg-surface px-5 py-3 text-base outline-none focus:border-brand" />
-      <ul className="mt-4 space-y-3">
+        className="w-full border-0 border-b-2 border-ink bg-transparent py-3 font-serif text-2xl outline-none placeholder:text-muted focus:border-brand" />
+      <ul className="mt-2">
         {results.map((r) => (
-          <li key={r.slug}>
-            <Link href={"/blog/" + r.slug} className="block rounded-2xl border border-line bg-surface p-4 active:bg-brandsoft">
-              <p className="text-xs font-medium text-brand">{r.categoryName}</p>
-              <p className="font-semibold leading-snug">{r.title}</p>
-              <p className="mt-1 text-sm text-muted line-clamp-2">{r.excerpt}</p>
+          <li key={r.slug} className="border-b border-line py-4">
+            <Link href={"/blog/" + r.slug} className="block">
+              <p className="text-sm font-semibold text-brand">{r.categoryName}</p>
+              <p className="font-serif text-xl font-bold leading-snug">{r.title}</p>
+              <p className="mt-1 text-muted">{r.excerpt}</p>
             </Link>
           </li>
         ))}
-        {results.length === 0 && <li className="text-muted py-8 text-center">No guides match “{q}”. Try a shorter search, such as “SWIFT”.</li>}
+        {results.length === 0 && <li className="py-10 text-center text-muted">No guides match “{q}”. Try a shorter search, such as “SWIFT”.</li>}
       </ul>
     </div>
   );
