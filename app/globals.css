@@ -2,15 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
-  --paper: #f4f6f5; --surface: #ffffff; --ink: #10231f; --muted: #55645f;
-  --line: #dde3e0; --brand: #0b6b57; --brandsoft: #dcefe9; --brandink: #ffffff;
+  --paper: #ffffff; --surface: #f3f4f7; --ink: #0b1220; --muted: #596273;
+  --line: #d9dde4; --brand: #1d4ed8; --brandsoft: #e8eeff; --brandink: #ffffff;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #0d1715; --surface: #14211e; --ink: #e8f0ed; --muted: #9db0aa;
-    --line: #243430; --brand: #4fc3a1; --brandsoft: #153029; --brandink: #06201a;
+    --paper: #0b1220; --surface: #131b2e; --ink: #eef1f6; --muted: #9aa4b5;
+    --line: #25304a; --brand: #7ba2ff; --brandsoft: #16223f; --brandink: #0b1220;
     color-scheme: dark;
   }
 }
@@ -20,8 +21,8 @@ body { background: var(--paper); color: var(--ink); -webkit-tap-highlight-color:
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
 
-.article { font-family: var(--font-serif), Georgia, serif; font-size: 1.125rem; line-height: 1.8; max-width: 38rem; }
-.article h2 { font-family: var(--font-sans), system-ui, sans-serif; font-size: 1.4rem; font-weight: 700; line-height: 1.3; margin: 2.2rem 0 0.8rem; }
+.article { font-family: var(--font-serif), Georgia, serif; font-size: 1.2rem; line-height: 1.75; max-width: 40rem; }
+.article h2 { font-fa-mily: var(--font-sans), system-ui, sans-serif; font-size: 1.4rem; font-weight: 700; line-height: 1.3; margin: 2.2rem 0 0.8rem; }
 .article h3 { font-family: var(--font-sans), system-ui, sans-serif; font-size: 1.15rem; font-weight: 600; margin: 1.6rem 0 0.6rem; }
 .article p { margin: 0 0 1.1rem; }
 .article ul, .article ol { margin: 0 0 1.2rem 1.3rem; }
@@ -32,5 +33,5 @@ body { background: var(--paper); color: var(--ink); -webkit-tap-highlight-color:
 .article table { width: 100%; border-collapse: collapse; font-family: var(--font-sans), system-ui, sans-serif; font-size: 0.95rem; margin: 0 0 1.4rem; display: block; overflow-x: auto; }
 .article th, .article td { border-bottom: 1px solid var(--line); padding: 0.6rem 0.7rem; text-align: left; white-space: nowrap; }
 .article th { background: var(--brandsoft); }
-.article img { max-width: 100%; height: auto; border-radius: 12px; margin: 1.2rem 0; }
+.article img { max-width: 100%; height: auto; border-radius: 2px; margin: 1.2rem 0; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
