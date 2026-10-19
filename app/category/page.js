@@ -8,21 +8,24 @@ export default async function Topics() {
   const [cats, posts] = await Promise.all([getCategories(), getPosts()]);
   const top = cats.filter((c) => !c.parent);
   return (
-    <div className="max-w-3xl">
-      <h1 className="border-t-2 border-ink pt-2 font-serif text-4xl font-bold">Topics</h1>
-      {top.map((c) => {
-        const subs = cats.filter((s) => s.parent === c.slug);
-        const count = posts.filter((p) => p.category === c.slug || subs.some((s) => s.slug === p.category)).length;
-        return (
-          <div key={c.slug} className="border-b border-line py-5">
-            <Link href={"/category/" + c.slug} className="block">
-              <p className="font-serif text-2xl font-bold">{c.name} <span className="text-base font-normal text-muted">({count})</span></p>
-              <p className="mt-1 text-muted">{c.description}</p>
-            </Link>
-            {subs.length > 0 && <p className="mt-2 text-sm">{subs.map((s) => <Link key={s.slug} href={"/category/" + s.slug} className="mr-4 font-semibold text-brand">{s.name}</Link>)}</p>}
-          </div>
-        );
-      })}
+    <div>
+      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Topics</h1>
+      <p className="mt-2 text-muted">Pick a topic to see all of its guides.</p>
+      <div className="post-grid mt-8">
+        {top.map((c) => {
+          const subs = cats.filter((s) => s.parent === c.slug);
+          const count = posts.filter((p) => p.category === c.slug || subs.some((s) => s.slug === p.category)).length;
+          return (
+            <div key={c.slug} className="card p-5">
+              <Link href={"/category/" + c.slug} className="block flex-1">
+                <h2 className="text-lg font-semibold">{c.name} <span className="text-sm font-normal text-muted">({count})</span></h2>
+                <p className="mt-1 text-sm text-muted">{c.description}</p>
+              </Link>
+              {subs.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{subs.map((s) => <Link key={s.slug} href={"/category/" + s.slug} className="chip">{s.name}</Link>)}</div>}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
