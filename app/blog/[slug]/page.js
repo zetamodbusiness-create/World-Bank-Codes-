@@ -38,35 +38,41 @@ export default async function PostPage({ params }) {
   return (
     <article className="mx-auto max-w-3xl">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <nav aria-label="Breadcrumb" className="mb-3 flex flex-wrap gap-x-2 text-sm font-semibold">
-        {path.map((c, i) => (<span key={c.slug} className="text-brand">{i > 0 && <span className="text-muted">/ </span>}<Link href={"/category/" + c.slug}>{c.name}</Link></span>))}
-      </nav>
-      <h1 className="font-serif text-4xl font-bold leading-tight sm:text-5xl">{post.title}</h1>
-      <p className="mt-3 font-serif text-xl italic text-muted">{post.excerpt}</p>
-      <p className="mt-4 border-y border-line py-2 text-sm text-muted">Last checked {fmtDate(post.updated)} · {post.readMins} min read</p>
-      <div className="mt-5"><PostImage image={post.image} label={post.codes?.[0]?.value} priority /></div>
+      <Link href={"/category/" + cat.slug} className="pill mb-6">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+        {cat.name}
+      </Link>
+      <div className="soft overflow-hidden rounded-3xl"><PostImage image={post.image} label={post.codes?.[0]?.value} category={post.category} priority /></div>
+      <div className="mt-6 flex flex-wrap items-center gap-2 text-sm text-muted">
+        <span className="tag">{cat.name}</span><span aria-hidden="true">·</span>
+        <span>Last checked {fmtDate(post.updated)}</span><span aria-hidden="true">·</span><span>{post.readMins} min read</span>
+      </div>
+      <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">{post.title}</h1>
+      <p className="mt-3 text-lg text-muted">{post.excerpt}</p>
       {post.codes?.length > 0 && <div className="mt-6 space-y-3">{post.codes.map((c) => <CodeCard key={c.label} {...c} />)}</div>}
-      <div className="article mt-8" dangerouslySetInnerHTML={{ __html: post.body }} />
+      <div className="article mt-8 border-t border-line pt-8" dangerouslySetInnerHTML={{ __html: post.body }} />
       {post.faq?.length > 0 && (
         <section className="mt-10">
-          <h2 className="mb-3 border-t-2 border-ink pt-2 font-serif text-2xl font-bold">Frequently asked questions</h2>
-          {post.faq.map((f) => (
-            <details key={f.q} className="border-b border-line py-3">
-              <summary className="cursor-pointer font-semibold">{f.q}</summary>
-              <p className="mt-2 text-muted">{f.a}</p>
-            </details>
-          ))}
+          <h2 className="mb-3 text-xl font-bold">Frequently asked questions</h2>
+          <div className="space-y-3">
+            {post.faq.map((f) => (
+              <details key={f.q} className="soft rounded-2xl border border-line bg-surface p-4">
+                <summary className="cursor-pointer font-semibold">{f.q}</summary>
+                <p className="mt-2 text-muted">{f.a}</p>
+              </details>
+            ))}
+          </div>
         </section>
       )}
       {post.sources?.length > 0 && (
-        <section className="mt-10 bg-surface p-4 text-sm">
+        <section className="mt-10 rounded-2xl bg-brandsoft p-5 text-sm">
           <h2 className="font-semibold">Sources</h2>
           <ul className="mt-2 space-y-1">{post.sources.map((s) => <li key={s.url}><a href={s.url} rel="noopener noreferrer" target="_blank" className="text-brand underline underline-offset-2">{s.label}</a></li>)}</ul>
         </section>
       )}
       <section className="mt-12">
-        <h2 className="mb-4 border-t-2 border-ink pt-2 font-serif text-2xl font-bold">Keep reading</h2>
-        {related.map((p) => <PostCard key={p.slug} post={p} categoryName={cats.find((c) => c.slug === p.category)?.name} />)}
+        <h2 className="mb-4 text-xl font-bold">Keep reading</h2>
+        <div className="post-grid">{related.map((p) => <PostCard key={p.slug} post={p} categoryName={cats.find((c) => c.slug === p.category)?.name} />)}</div>
       </section>
     </article>
   );
