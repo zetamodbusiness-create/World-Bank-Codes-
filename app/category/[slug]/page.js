@@ -17,21 +17,19 @@ export default async function CategoryPage({ params }) {
   const [cats, posts, path] = await Promise.all([getCategories(), getPostsByCategory(cat.slug), getCategoryPath(cat)]);
   const subs = cats.filter((c) => c.parent === cat.slug);
   const name = (s) => cats.find((c) => c.slug === s)?.name;
-  const [first, ...rest] = posts;
   return (
     <div>
-      <nav aria-label="Breadcrumb" className="mb-3 flex flex-wrap gap-x-2 text-sm font-semibold text-muted">
-        <Link href="/category" className="text-brand">Topics</Link>
-        {path.map((c) => <span key={c.slug}>/ {c.slug === cat.slug ? c.name : <Link href={"/category/" + c.slug} className="text-brand">{c.name}</Link>}</span>)}
+      <nav aria-label="Breadcrumb" className="mb-5 flex flex-wrap gap-2 text-sm">
+        <Link href="/category" className="pill">Topics</Link>
+        {path.filter((c) => c.slug !== cat.slug).map((c) => <Link key={c.slug} href={"/category/" + c.slug} className="pill">{c.name}</Link>)}
       </nav>
-      <div className="border-t-2 border-ink pt-2">
-        <h1 className="font-serif text-4xl font-bold">{cat.name}</h1>
-        <p className="mt-2 max-w-2xl text-lg text-muted">{cat.description}</p>
-        {subs.length > 0 && <p className="mt-3 text-sm">{subs.map((s) => <Link key={s.slug} href={"/category/" + s.slug} className="mr-4 font-semibold text-brand">{s.name}</Link>)}</p>}
+      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{cat.name}</h1>
+      <p className="mt-2 max-w-2xl text-muted">{cat.description}</p>
+      {subs.length > 0 && <div className="mt-5 flex flex-wrap gap-2">{subs.map((s) => <Link key={s.slug} href={"/category/" + s.slug} className="chip">{s.name}</Link>)}</div>}
+      <div className="post-grid mt-8">
+        {posts.map((p, i) => <PostCard key={p.slug} post={p} categoryName={name(p.category)} priority={i === 0} />)}
       </div>
-      {first && <div className="mt-8"><PostCard post={first} categoryName={name(first.category)} variant="lead" priority /></div>}
-      {rest.length > 0 && <div className="mt-8 max-w-3xl">{rest.map((p) => <PostCard key={p.slug} post={p} categoryName={name(p.category)} />)}</div>}
-      {posts.length === 0 && <p className="py-12 text-muted">No guides in this topic yet. Check back soon.</p>}
+      {posts.length === 0 && <p className="py-16 text-center text-muted">No guides in this topic yet. Check back soon.</p>}
     </div>
   );
 }
