@@ -5,6 +5,8 @@ import { site } from "@/lib/site";
 
 export const revalidate = 3600;
 
+const fade = "linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent)";
+
 export default async function Home() {
   const [cats, posts] = await Promise.all([getCategories(), getPosts()]);
   const name = (slug) => cats.find((c) => c.slug === slug)?.name;
@@ -24,10 +26,14 @@ export default async function Home() {
           Search a code or bank
         </Link>
       </section>
-      <div className="flex flex-wrap justify-center gap-2 pb-8 pt-4">
-        <Link href="/" className="chip chip-active">All<small>{posts.length}</small></Link>
-        {top.map((c) => <Link key={c.slug} href={"/category/" + c.slug} className="chip">{c.name}<small>{count(c)}</small></Link>)}
-      </div>
+      <nav aria-label="Categories" className="no-scrollbar -mx-4 overflow-x-auto pb-8 pt-4" style={{ WebkitMaskImage: fade, maskImage: fade }}>
+        <div className="flex w-max min-w-full justify-center gap-2 px-6">
+          <Link href="/" className="chip chip-active shrink-0">All<small>{posts.length}</small></Link>
+          {top.map((c) => (
+            <Link key={c.slug} href={"/category/" + c.slug} className="chip shrink-0">{c.name}<small>{count(c)}</small></Link>
+          ))}
+        </div>
+      </nav>
       {posts.length > 0 ? (
         <div className="post-grid">
           {posts.map((p, i) => <PostCard key={p.slug} post={p} categoryName={name(p.category)} priority={i === 0} />)}
