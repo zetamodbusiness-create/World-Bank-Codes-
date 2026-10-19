@@ -1,12 +1,10 @@
 import "./globals.css";
 import Link from "next/link";
-import { Newsreader, Public_Sans } from "next/font/google";
-import Tabs from "@/components/Tabs";
+import { Plus_Jakarta_Sans } from "next/font/google";
+import Header from "@/components/Header";
 import { site } from "@/lib/site";
-import { getCategories } from "@/lib/data";
 
-const sans = Public_Sans({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const serif = Newsreader({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-serif", display: "swap", adjustFontFallback: false });
+const sans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
 export const metadata = {
   metadataBase: new URL(site.url),
@@ -17,20 +15,17 @@ export const metadata = {
 };
 export const viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 
-export default async function RootLayout({ children }) {
-  const top = (await getCategories()).filter((c) => !c.parent);
-  const items = [{ href: "/", label: "Home" }, ...top.map((c) => ({ href: "/category/" + c.slug, label: c.name })), { href: "/search", label: "Search" }];
+const themeScript = "try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}";
+
+export default function RootLayout({ children }) {
   return (
-    <html lang="en-US" className={sans.variable + " " + serif.variable}>
+    <html lang="en-US" className={sans.variable} suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
       <body className="min-h-screen font-sans antialiased">
-        <header className="mx-auto max-w-5xl px-4 pb-4 pt-6 text-center" style={{ paddingTop: "max(1.5rem, env(safe-area-inset-top))" }}>
-          <Link href="/" className="font-serif text-4xl font-extrabold tracking-tight sm:text-5xl">{site.name}</Link>
-          <p className="mt-1 font-serif italic text-muted">{site.tagline}</p>
-        </header>
-        <Tabs items={items} />
-        <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
-        <footer className="mx-auto max-w-5xl px-4 pb-12 text-sm text-muted" style={{ paddingBottom: "max(3rem, env(safe-area-inset-bottom))" }}>
-          <div className="flex flex-wrap gap-x-6 gap-y-2 border-t-2 border-ink pt-5">
+        <Header name={site.name} />
+        <main className="mx-auto max-w-5xl px-4 py-6">{children}</main>
+        <footer className="mt-10 border-t border-line py-8 text-center text-sm text-muted" style={{ paddingBottom: "max(2rem, env(safe-area-inset-bottom))" }}>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
             <Link href="/about">About</Link><Link href="/contact">Contact</Link>
             <Link href="/privacy">Privacy Policy</Link><Link href="/disclaimer">Disclaimer</Link>
           </div>
