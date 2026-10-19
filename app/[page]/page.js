@@ -12,7 +12,7 @@ export default function InfoPage({ params }) {
   if (!p) notFound();
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="border-t-2 border-ink pt-2 font-serif text-4xl font-bold">{p.title}</h1>
+      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{p.title}</h1>
       <div className="article mt-6">{p.text.map((t, i) => <p key={i}>{t}</p>)}</div>
     </div>
   );
