@@ -2,47 +2,20 @@ import Link from "next/link";
 import PostImage from "./PostImage";
 import { fmtDate } from "@/lib/site";
 
-function Meta({ post, categoryName }) {
+export default function PostCard({ post, categoryName, priority = false }) {
   return (
-    <p className="text-sm text-muted">
-      {categoryName && <span className="font-semibold text-brand">{categoryName}</span>}
-      {categoryName && " · "}{fmtDate(post.updated)}
-    </p>
-  );
-}
-
-export default function PostCard({ post, categoryName, variant = "row", priority = false }) {
-  const label = post.codes?.[0]?.value || "";
-  const href = "/blog/" + post.slug;
-  if (variant === "lead") {
-    return (
-      <article>
-        <Link href={href} className="block"><PostImage image={post.image} label={label} priority={priority} ratio="16 / 9" /></Link>
-        <div className="mt-4"><Meta post={post} categoryName={categoryName} /></div>
-        <h2 className="mt-1 font-serif text-3xl font-bold leading-tight sm:text-4xl"><Link href={href}>{post.title}</Link></h2>
-        <p className="mt-2 max-w-2xl text-lg text-muted">{post.excerpt}</p>
-      </article>
-    );
-  }
-  if (variant === "grid") {
-    return (
-      <article>
-        <Link href={href} className="block"><PostImage image={post.image} label={label} ratio="3 / 2" /></Link>
-        <div className="mt-3"><Meta post={post} categoryName={categoryName} /></div>
-        <h3 className="mt-1 font-serif text-xl font-bold leading-snug"><Link href={href}>{post.title}</Link></h3>
-        <p className="mt-1 text-muted">{post.excerpt}</p>
-      </article>
-    );
-  }
-  return (
-    <article className="flex gap-4 border-b border-line py-4 first:pt-0">
-      <div className="min-w-0 flex-1">
-        <Meta post={post} categoryName={categoryName} />
-        <h3 className="mt-1 font-serif text-lg font-bold leading-snug"><Link href={href}>{post.title}</Link></h3>
+    <Link href={"/blog/" + post.slug} className="card">
+      <PostImage image={post.image} label={post.codes?.[0]?.value} category={post.category} badge={categoryName} priority={priority} />
+      <div className="flex flex-1 flex-col gap-2 p-5">
+        <h3 className="text-lg font-semibold leading-snug">{post.title}</h3>
+        <p className="line-clamp-3 flex-1 text-sm text-muted">{post.excerpt}</p>
+        <div className="mt-2 flex items-center gap-2 border-t border-dashed border-line pt-3 text-xs text-muted">
+          <span>{fmtDate(post.updated)}</span><span aria-hidden="true">·</span><span>{post.readMins} min read</span>
+          <span className="card-arrow ml-auto" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          </span>
+        </div>
       </div>
-      <Link href={href} className="block w-24 shrink-0 self-start sm:w-32" tabIndex={-1} aria-hidden="true">
-        <PostImage image={post.image} label={label} ratio="4 / 3" />
-      </Link>
-    </article>
+    </Link>
   );
 }
