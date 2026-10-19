@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
 import { getCategories } from "@/lib/data";
 
 const sans = Public_Sans({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const serif = Newsreader({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-serif", display: "swap" });
+const serif = Newsreader({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-serif", display: "swap", adjustFontFallback: false });
 
 export const metadata = {
   metadataBase: new URL(site.url),
