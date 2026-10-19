@@ -5,50 +5,36 @@ import { site } from "@/lib/site";
 
 export const revalidate = 3600;
 
-function SectionHead({ title, href }) {
-  return (
-    <div className="mb-4 flex items-baseline justify-between border-t-2 border-ink pt-2">
-      <h2 className="font-serif text-2xl font-bold">{title}</h2>
-      {href && <Link href={href} className="text-sm font-semibold text-brand">See all</Link>}
-    </div>
-  );
-}
-
 export default async function Home() {
   const [cats, posts] = await Promise.all([getCategories(), getPosts()]);
   const name = (slug) => cats.find((c) => c.slug === slug)?.name;
-  const [lead, ...rest] = posts;
-  const secondary = rest.slice(0, 2);
-  const latest = rest.slice(2, 8);
   const top = cats.filter((c) => !c.parent);
+  const count = (c) => posts.filter((p) => p.category === c.slug || cats.find((x) => x.slug === p.category)?.parent === c.slug).length;
   const jsonLd = { "@context": "https://schema.org", "@type": "WebSite", name: site.name, url: site.url,
     potentialAction: { "@type": "SearchAction", target: site.url + "/search", "query-input": "required name=search_term_string" } };
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <h1 className="sr-only">{site.name}: {site.tagline}</h1>
-      {lead && (
-        <section className="grid gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-2"><PostCard post={lead} categoryName={name(lead.category)} variant="lead" priority /></div>
-          <div className="space-y-6 lg:border-l lg:border-line lg:pl-8">
-            {secondary.map((p) => <PostCard key={p.slug} post={p} categoryName={name(p.category)} variant="grid" />)}
-          </div>
-        </section>
+      <section className="hero">
+        <span className="hero-badge">Every guide is checked against official sources</span>
+        <h1 className="grad-text mx-auto mt-5 max-w-2xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">{site.tagline}</h1>
+        <p className="mx-auto mt-4 max-w-xl text-muted">{site.description}</p>
+        <Link href="/search" className="soft mx-auto mt-7 flex max-w-md items-center gap-3 rounded-full border border-line bg-surface px-5 py-3.5 text-left text-muted">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+          Search a code or bank
+        </Link>
+      </section>
+      <div className="flex flex-wrap justify-center gap-2 pb-8 pt-4">
+        <Link href="/" className="chip chip-active">All<small>{posts.length}</small></Link>
+        {top.map((c) => <Link key={c.slug} href={"/category/" + c.slug} className="chip">{c.name}<small>{count(c)}</small></Link>)}
+      </div>
+      {posts.length > 0 ? (
+        <div className="post-grid">
+          {posts.map((p, i) => <PostCard key={p.slug} post={p} categoryName={name(p.category)} priority={i === 0} />)}
+        </div>
+      ) : (
+        <p className="py-16 text-center text-muted">Guides are coming soon.</p>
       )}
-      {latest.length > 0 && (
-        <section className="mt-12"><SectionHead title="Latest guides" />
-          <div className="max-w-3xl">{latest.map((p) => <PostCard key={p.slug} post={p} categoryName={name(p.category)} />)}</div>
-        </section>
-      )}
-      {top.map((c) => {
-        const list = posts.filter((p) => p.category === c.slug || cats.find((x) => x.slug === p.category)?.parent === c.slug).slice(0, 3);
-        if (!list.length) return null;
-        return (
-          <section key={c.slug} className="mt-12"><SectionHead title={c.name} href={"/category/" + c.slug} />
-            <div className="max-w-3xl">{list.map((p) => <PostCard key={p.slug} post={p} categoryName={name(p.category)} />)}</div>
-          </section>
-        );
-      })}
     </>
   );
 }
