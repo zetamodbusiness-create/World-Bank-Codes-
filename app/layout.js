@@ -1,8 +1,9 @@
 import "./globals.css";
 import "./menu.css";
-import Link from "next/link";
+import "./footer.css";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { site } from "@/lib/site";
 import { getCategories } from "@/lib/data";
 import { pages } from "@/lib/pages";
@@ -29,13 +30,7 @@ export default async function RootLayout({ children }) {
       <body className="min-h-screen font-sans antialiased">
         <Header name={site.name} categories={categories} important={important} />
         <main className="mx-auto max-w-5xl px-4 py-6">{children}</main>
-        <footer className="mt-10 border-t border-line py-8 text-center text-sm text-muted" style={{ paddingBottom: "max(2rem, env(safe-area-inset-bottom))" }}>
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-            <Link href="/about">About</Link><Link href="/contact">Contact</Link>
-            <Link href="/privacy">Privacy Policy</Link><Link href="/disclaimer">Disclaimer</Link>
-          </div>
-          <p className="mt-3">© {new Date().getFullYear()} {site.name}. For information only, not financial advice.</p>
-        </footer>
+        <Footer name={site.name} description={site.description} categories={categories} important={important} />
       </body>
     </html>
   );
